@@ -77,3 +77,9 @@ functions:
               - X-Api-Key
               - X-Amz-Security-Token
             allowCredentials: false
+
+  sqs_example:
+    handler: myapp/handlers.sqs_handler
+    events:
+      - sqs:
+          arn: "QUEUE ARN HERE"
