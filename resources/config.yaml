@@ -1,0 +1,14 @@
+defaults: &defaults
+  cookies.enabled: false
+  cors.domain: "*"
+
+dev:
+  <<: *defaults
+
+
+unittest:
+  <<: *defaults
+
+
+prod:
+  <<: *defaults

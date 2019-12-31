@@ -1,0 +1,79 @@
+service: myapp-service
+
+
+provider:
+  name: aws
+  runtime: python3.8
+  profile: profile
+  region: us-east-1
+  stage: dev
+  timeout: 30
+  custom:
+    stage: ${opt:stage, self:provider.stage}
+
+  environment:
+    APP_STAGE: ${self:provider.custom.stage}
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+      Resource:
+        - "*"
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource:
+        - "*"
+    - Effect: "Allow"
+      Action:
+        - "kinesis:*"
+      Resource:
+        - "*"
+    - Effect: "Allow"
+      Action:
+        - "es:*"
+      Resource:
+        - "*"
+    - Effect: "Allow"
+      Action:
+        - "lambda:InvokeFunction"
+      Resource:
+        - "*"
+
+
+# you can add packaging information here
+package:
+  exclude:
+    - '!vendors/**'
+    - 'vendors/lxml/**'
+    - '!resources/**'
+    - '!*.yml'
+    - 'node_modules/**'
+    - '.idea/**'
+    - '.git/**'
+    - 'utils/**'
+    - 'tests/**'
+    - '*.iml'
+  include:
+    - '../../myapp/**'
+    - '../../resources/**'
+    - '../../vendors/**'
+
+functions:
+  hello_world:
+    handler: myapp/handlers.hello_world
+    events:
+      - http:
+          path: hello-world
+          method: any
+          cors:
+            origins:
+              - '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+            allowCredentials: false
